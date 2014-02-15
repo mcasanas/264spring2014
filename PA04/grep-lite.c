@@ -33,13 +33,15 @@ int main(int argc, char **argv)
 
   const char *pattern = argv[argc - 1];
 
-  for(i = 1; i < argc; i++){
+  for(i = 1; i < argc -1; i++){
 #define ARGCMP(S) (strcmp(argv[i], S) == 0)
     if(ARGCMP("--help")) showHelp = TRUE;
     else if(ARGCMP("--invert-match")) invertMatch = TRUE;
     else if(ARGCMP("-v")) invertMatch = TRUE;
     else if(ARGCMP("--line-number")) lineNumber = TRUE;
+    else if(ARGCMP("-n")) lineNumber = TRUE;
     else if(ARGCMP("--quiet")) quiet = TRUE;
+    else if(ARGCMP("-q")) quiet = TRUE;
     else{
       fprintf(stderr, "error!\n");
       return ERROR;
@@ -52,7 +54,7 @@ int main(int argc, char **argv)
     printHelp();
     return EXIT_SUCCESS;
   }
-
+  //printf("HERE %d", argc);
   if(argc == 1){
     fprintf(stderr, "error!\n");
     return ERROR;
@@ -75,6 +77,12 @@ int main(int argc, char **argv)
       }
     }
   }
+  //printf("\n%d\n",found);
+  if(found == TRUE) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
   
-  return found ? 0 : 1;
 }
