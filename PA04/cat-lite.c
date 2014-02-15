@@ -62,11 +62,11 @@ int main(int argc, char **argv)
 
   for(i = 1; i < argc; i++)
   {
-    if(catFile(argv[i], stdout) == FALSE)
+    if(catFILE(argv[i], stdout) == FALSE)
     {
       fprintf(stderr, "cat cannot open %s\n", argv[i]);
       return EXIT_FAILURE;
     }
   }
-
+  return 0;
 }
