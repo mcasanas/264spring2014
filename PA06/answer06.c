@@ -35,8 +35,6 @@ void partitionAllHelper(int a, int *array, int pos)
   }
 }
 
-
-
 void partitionIncreasingHelper(int a, int *array, int pos)
 {
   if(a == 0)
@@ -61,11 +59,8 @@ void partitionDecreasingHelper(int a, int *array, int pos)
 {
   if(a == 0)
   {
-    //printf("\n %d\n", increaseCheck(array,pos));
-    //if(decreaseCheck(array, pos)) { 
-      printPartition(array, pos);
-      //}  
-  return;
+    printPartition(array, pos);
+    return;
   }
 
   int b;
@@ -109,6 +104,63 @@ void partitionEvenHelper(int a, int *array, int pos)
   }
 }
 
+int EvenOddCheck(int a, int b)
+{
+  if((a % 2 == 0 && b % 2 == 0) || (a % 2 != 0 && b % 2 != 0)){
+    return 0;
+  }
+  return 1;
+}
+
+void partitionOddEvenHelper(int a, int *array, int pos)
+{
+  if(a == 0)
+  {
+    printPartition(array, pos);
+    return;
+  }
+
+  int b;
+  
+  for(b = 1; b <= a; b++)
+  {
+    array[pos] = b;
+    if(pos > 0 && !EvenOddCheck(array[pos], array[pos - 1])) continue;
+    //array[pos] = b;
+    partitionOddEvenHelper(a - b, array, pos + 1);
+  }
+}
+
+int primeCheck(int num)
+{
+  if(num == 1) return 0;
+  int i;
+  for(i = 2; i < num; i++){
+    if(num % i == 0) return 0;
+  }
+  return 1;
+}
+
+void partitionPrimeHelper(int budget, int *array, int pos)
+{
+  if(budget == 0)
+  {
+    printPartition(array, pos);
+    return;
+  }
+
+  int spending;
+  for(spending = 1; spending <= budget; spending++)
+  {
+    //printf("\n%d\n", primeCheck(spending));
+    if(!(primeCheck(spending))){
+      continue;
+    }
+    array[pos] = spending;
+    partitionPrimeHelper(budget - spending, array, pos + 1);
+  }
+}
+
 
 
 
@@ -119,7 +171,6 @@ void partitionAll(int value)
   int *array = malloc(sizeof(int) * value);
   partitionAllHelper(value, array, 0);
   free(array);
-
 }
 
 void partitionIncreasing(int value)
@@ -150,3 +201,16 @@ void partitionEven(int value)
   free(array);
 }
 
+void partitionOddAndEven(int value)
+{
+  int *array = malloc(sizeof(int) * value);
+  partitionOddEvenHelper(value, array, 0);
+  free(array);
+}
+
+void partitionPrime(int value)
+{
+  int *array = malloc(sizeof(int) * value);
+  partitionPrimeHelper(value, array, 0);
+  free(array);
+}
