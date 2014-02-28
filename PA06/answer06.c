@@ -19,7 +19,7 @@ void printPartition(int *partition, int length)
 
 }
 
-/*void partitionAllHelper(int a, int *array, int pos)
+void partitionAllHelper(int a, int *array, int pos)
 {
   if(a == 0)
   {
@@ -34,41 +34,7 @@ void printPartition(int *partition, int length)
     partitionAllHelper(a - b, array, pos + 1);
   }
 }
-*/
 
-int increaseCheck(int *array, int pos)
-{
-  //printf("%d    ",pos);
-  if(pos < 1){
-    return 1;
-  }  
-  int ind;
-  for (ind = 1; ind < pos; ind++)
-  {
-    //printf("\n %d and %d\n", array[ind-1], array[ind]);
-    if(array[ind - 1] > array[ind]) {
-      return 0;
-    }
-  }
-  return 1;
-}
-
-int decreaseCheck(int *array, int pos)
-{
-  //printf("%d    ",pos);
-  if(pos < 1){
-    return 1;
-  }  
-  int ind;
-  for (ind = 1; ind < pos; ind++)
-  {
-    //printf("\n %d and %d\n", array[ind-1], array[ind]);
-    if(array[ind - 1] < array[ind]) {
-      return 0;
-    }
-  }
-  return 1;
-}
 
 
 void partitionIncreasingHelper(int a, int *array, int pos)
@@ -76,14 +42,15 @@ void partitionIncreasingHelper(int a, int *array, int pos)
   if(a == 0)
   {
     //printf("\n %d\n", increaseCheck(array,pos));
-    if(increaseCheck(array, pos)){ 
+    //if(increaseCheck(array, pos)){ 
       printPartition(array, pos);
-    }  
+      //}  
   return;
   }
 
   int b;
-  for(b = 1; b <= a; b++)
+  int start = pos == 0 ? 1 : array[pos - 1] + 1;
+  for(b = start; b <= a; b++)
   {
     array[pos] = b;
     partitionIncreasingHelper(a - b, array, pos + 1);    
@@ -95,18 +62,50 @@ void partitionDecreasingHelper(int a, int *array, int pos)
   if(a == 0)
   {
     //printf("\n %d\n", increaseCheck(array,pos));
-    if(decreaseCheck(array, pos)) 
-    { 
+    //if(decreaseCheck(array, pos)) { 
       printPartition(array, pos);
-    }  
+      //}  
   return;
   }
 
   int b;
-  for(b = 1; b <= a; b++)
+  int start = pos == 0 ? a : array[pos - 1] - 1;
+  for(b = start; b > 0; b--)
   {
     array[pos] = b;
     partitionDecreasingHelper(a - b, array, pos + 1);    
+  }
+}
+
+void partitionOddHelper(int a, int *array, int pos)
+{
+  if(a == 0)
+  {
+    printPartition(array, pos);
+    return;
+  }
+
+  int b;
+  for(b = 1; b <= a; b += 2)
+  {
+    array[pos] = b;
+    partitionOddHelper(a - b, array, pos + 1);
+  }
+}
+
+void partitionEvenHelper(int a, int *array, int pos)
+{
+  if(a == 0)
+  {
+    printPartition(array, pos);
+    return;
+  }
+
+  int b;
+  for(b = 2; b <= a; b += 2)
+  {
+    array[pos] = b;
+    partitionEvenHelper(a - b, array, pos + 1);
   }
 }
 
@@ -114,14 +113,14 @@ void partitionDecreasingHelper(int a, int *array, int pos)
 
 
 
-/*void partitionAll(int value)
-{
 
+void partitionAll(int value)
+{
   int *array = malloc(sizeof(int) * value);
   partitionAllHelper(value, array, 0);
   free(array);
 
-  }*/
+}
 
 void partitionIncreasing(int value)
 {
@@ -136,3 +135,18 @@ void partitionDecreasing(int value)
   partitionDecreasingHelper(value, array, 0);
   free(array);
 }
+
+void partitionOdd(int value)
+{
+  int *array = malloc(sizeof(int) * value);
+  partitionOddHelper(value, array, 0);
+  free(array);
+}
+
+void partitionEven(int value)
+{
+  int *array = malloc(sizeof(int) * value);
+  partitionEvenHelper(value, array, 0);
+  free(array);
+}
+
