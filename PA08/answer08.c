@@ -38,6 +38,18 @@ void SparseArray_destroy(SparseNode * array)
   free(array);
 }
 
+int SparseArray_getMin(SparseNode * array)
+{
+  if(array -> left == NULL) return (array -> index);
+  return SparseArray_getMin(array -> left);
+}
+
+int SparseArray_getMax(SparseNode * array)
+{
+  if(array -> right == NULL) return (array -> index);
+  return SparseArray_getMax(array -> right);
+}
+
 SparseNode * SparseArray_getNode(SparseNode * array, int index)
 {
   if(array == NULL) return NULL;
@@ -48,4 +60,60 @@ SparseNode * SparseArray_getNode(SparseNode * array, int index)
   else{
     return SparseArray_getNode(array -> right, index);
   }
+}
+
+SparseNode * SparseArray_remove(SparseNode * array, int index)
+{
+  if(array == NULL) return NULL;
+  
+  if(array -> index == index){
+    if((array -> left == NULL) && (array -> right == NULL)){
+      free(array);
+      return array;
+    }
+    else if((array -> left == NULL) && (array -> right != NULL)){
+      array = array -> right;
+      free(array -> right);
+      return array;
+    }
+    else if((array -> left != NULL) && (array -> right == NULL)){
+      array = array -> left;
+      free(array -> left);
+      return array;
+    }
+    else if((array -> left != NULL) && (array -> right != NULL)){
+      //array = array -> right;
+      SparseNode *temp = array -> right;
+      while(temp -> left != NULL){
+	temp = array -> left;
+	if(temp -> left == NULL){
+	  free(array);
+	}
+      }
+      array = temp;
+      free(temp);
+    }
+  
+  }
+  
+  if(array -> index > index){
+    return SparseArray_remove(array -> left, index);
+  }
+  else if(array -> index < index){
+    return SparseArray_remove(array -> right, index);
+  }
+}
+
+SparseNode * SparseArray_copy(SparseNode * array)
+{
+  SparseNode * newarray;
+  if(array == NULL) return NULL;
+  if(array -> left != NULL){
+    newarray -> left = SparseArray_copy(array -> left);
+  }
+  if(array -> right != NULL){
+    newarray -> right = SparseArray_copy(array -> right);
+  }
+  newarray = array;
+  return newarray;
 }
