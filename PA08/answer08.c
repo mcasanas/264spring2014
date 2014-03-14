@@ -98,6 +98,38 @@ SparseNode * SparseArray_remove(SparseNode * array, int index)
 {
   if(array == NULL) return NULL;
 
+  
+
+  // printf("%d %d\n", array -> index, index);
+  if(array -> index == index){
+    if((array -> left == NULL) && (array -> right == NULL)){
+      free(array);
+      return array;
+    }
+    else if((array -> left != NULL) && (array -> right == NULL)){
+      array = array -> left;
+      return array;
+    }
+    else if((array -> left == NULL) && (array -> right != NULL)){
+      array = array -> right;
+      return array;
+    }
+    else if((array -> left != NULL) && (array -> right != NULL)){
+      SparseNode * temp = NULL;
+      temp -> index = array -> right -> index;
+      temp -> value = array -> right -> value;
+      //printf("%d\n",temp -> left -> index);
+      while(temp -> left != NULL){
+	//printf("%d\n",temp -> left -> index);
+	temp -> index = temp -> left -> index;
+	temp -> value = temp -> left -> value;
+      }
+      array = temp;
+      free(temp);
+      return array;
+    }  
+  }
+
   if(array -> index > index){
     printf("left\n");
     array = SparseArray_remove(array -> left, index);
@@ -105,29 +137,6 @@ SparseNode * SparseArray_remove(SparseNode * array, int index)
   else if(array -> index < index){
     printf("right\n");
     array = SparseArray_remove(array -> right, index);
-  }
-
-  printf("%d %d\n", array -> index, index);
-  if(array -> index == index){
-    if((array -> left == NULL) && (array -> right == NULL)){
-      free(array);
-    }
-    else if((array -> left != NULL) && (array -> right == NULL)){
-      array = array -> left;
-    }
-    else if((array -> left == NULL) && (array -> right != NULL)){
-      array = array -> right;
-    }
-    else if((array -> left != NULL) && (array -> right != NULL)){
-      SparseNode * temp = NULL;
-      temp = array -> right;
-      while(temp -> left != NULL){
-	printf("%d\n",temp -> left -> index);
-	temp = temp -> left;
-      }
-      array = temp;
-      free(temp);
-    }
   }
   
   
