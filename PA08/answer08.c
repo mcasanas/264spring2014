@@ -144,15 +144,59 @@ SparseNode * SparseArray_remove(SparseNode * array, int index)
 }
 
 
-/*
+
 SparseNode * SparseArray_copy(SparseNode * array)
 {
   if(array == NULL) return NULL;
+  SparseNode *tempy = NULL;
   //SparseNode * newarray = NULL;
   //newarray = malloc()
   
-  //SparseArray_copy(array -> left);
-  //SparseArray_copy(array -> right);
+  SparseArray_copy(array -> left);
+  tempy = array;
+  SparseArray_copy(array -> right);
   //newarray = array;
-  return array;
-  }*/
+  return tempy;
+}
+
+
+int same(SparseNode *a, SparseNode *b)
+{
+  if(SparseArray_getNode(a, b -> index) == b -> index){
+    return 1;
+  }
+  return 0;
+}
+SparseNode * mergeHelper(SparseNode *array1, SparseNode * array2)
+{
+  if(array2 == NULL) return array1;
+  
+  array1 = mergeHelper(array1, array2 -> left);
+  array1 = mergeHelper(array1, array2 -> right);
+
+  if(array1 -> index != array2 -> index){
+    array1 = SparseArray_insert(array1, array2 -> index, array2 -> value);
+  }
+  else if(array1 -> index == array2 -> index){
+    array1 = SparseArray_insert(array1, array1 -> index, ((array1 -> value) + (array2 -> value)));
+  }
+  
+
+  return array1;
+}
+SparseNode * SparseArray_merge(SparseNode * array_1, SparseNode * array_2)
+{
+  if(array_1 == NULL) return array_1;
+  SparseNode *copya = NULL;
+  copya = SparseArray_copy(array_1);
+  copya = mergeHelper(copya, array_2);
+  /*if(array_1 -> index != array_2 -> index){
+    copya = SparseArray_insert(copya, array_2 -> index, array_2 -> value);
+  }
+  if(array_1 -> index == array_2 -> index){
+    copya = SparseArray_insert(copya, array_1 -> index, (array_1 -> value) + (array_2 -> value));
+  }
+  */
+  return copya;
+  
+}
