@@ -79,3 +79,40 @@ char * my_strcpy(char * dest, const char * src)
   *dest = '\0';
   return original;
 }
+
+char * my_strcat(char * dest, const char * src)
+{
+  my_strcpy(dest + my_strlen(dest), src);
+  return dest;
+}
+
+int my_isspace(int ch)
+{
+  if(ch == ' ' || ch == '\f' || ch == '\n' || ch == '\r' || ch == '\t' || ch == '\v'){
+    return 1;
+  }
+  return 0;
+}
+
+int isdigit(int ch)
+{
+  return(ch >= '0' && ch <= '9');
+}
+
+int my_atoi(const char * str)
+{
+  int sign = 1;
+  int ret = 0;
+  while(*str){
+    if(*str == '-'){
+      sign = -1;
+    }
+    if(isdigit(*str)){
+      ret *= 10;
+      ret += *str - '0';
+    }
+    str++;
+  }
+  
+  return sign * ret;
+}
