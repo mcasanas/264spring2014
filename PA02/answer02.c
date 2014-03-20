@@ -104,6 +104,9 @@ int my_atoi(const char * str)
   int sign = 1;
   int ret = 0;
   while(*str){
+    if(my_isspace(*str)){
+      str++;
+    }
     if(*str == '-'){
       sign = -1;
     }
@@ -111,6 +114,7 @@ int my_atoi(const char * str)
       ret *= 10;
       ret += *str - '0';
     }
+    //printf("%c\n", *str);
     str++;
   }
   
