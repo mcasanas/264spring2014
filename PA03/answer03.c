@@ -21,13 +21,21 @@ char * strcat_ex(char ** dest, int * n, const char * src)
   
   size_t src_len = strlen(src);
   size_t dest_len = (*dest == NULL ? 0 : strlen(*dest));
+  
   if(*dest == NULL || src_len + dest_len + 1 >= *n){
+    
     *n = 1 + 2*(src_len + dest_len);
+    printf("%d\n", *n);
     char * buffer = malloc(*n * sizeof(char));
+    printf("%s\n", buffer);
     *buffer = '\0';
     if(*dest != NULL) strcpy(buffer, *dest);
-    free(*dest);
+    printf("%s  %d\n%s  %d\n", buffer, strlen(buffer),  *dest, strlen(*dest));
+    //free(buffer);
+    //dest = malloc(*n * sizeof(char));
     *dest = buffer;
+    free(buffer);
+    
   }
   strcat(*dest, src);
   return *dest;
