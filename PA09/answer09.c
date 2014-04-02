@@ -109,7 +109,42 @@ HuffNode * HuffTree_readTextHeader(FILE * fp)
   return tree;
 }
 
+typedef struct{
+  FILE * fp;
+  unsigned char byte;
+  int pos;
+} BitFile;
+
+BitFile *BitFile_create(FILE *fp)
+{
+  BitFile *bitfile = malloc(sizeof(BitFile));
+  bitfile -> fp = fp;
+  bitfile -> byte = 0;
+  bitfile -> pos = 8;
+  return bitfile;
+}
+
+void BitFile_destroy(BitFile *bitfile)
+{
+  free(bitfile);
+}
+
+int BitFile_nextBit(BitFile *bitfile)
+{
+  if(bitfile -> pos == 8){
+    bitfile -> pos = 0;
+    if(fread(&(bitfile->byte), sizeof(unsigned char), 1,
+	     bitfile->fp != 1){
+	 return -1;
+       }
+  }
+    int val = bitfile -> byte | (1 << pos);
+    pos++;
+    return val;
+}
+
 HuffNode * HuffTree_readBinaryHeader(FILE * fp)
 {
+  
   return NULL;
 }
