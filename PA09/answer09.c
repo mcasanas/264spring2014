@@ -27,7 +27,7 @@ Stack * Stack_create()
 {
   Stack *stack = malloc(sizeof(Stack));
   stack -> head = NULL;
-  free(stack);
+  return stack;
 }
 
 void Stack_destroy(Stack * stack)
@@ -148,10 +148,10 @@ int BitFile_nextByte(BitFile *bf)
 {
   int ret = 0;
   int ind;
-  for(ind = 0, ind < 8, ind++){
+  for(ind = 0; ind < 8; ind++){
     int bit = BitFile_nextBit(bf);
     if(bit < 0) return -1;
-    ret = ret | (bit << (7 - bitfile->pos));
+    ret = ret | (bit << (7 - bf->pos));
   }
   return ret;
 }
@@ -159,22 +159,22 @@ int BitFile_nextByte(BitFile *bf)
 HuffNode * HuffTree_readBinaryHeader(FILE * fp)
 {
   Stack *stack = Stack_create();
-  BitFile *bf = Bitfile_create(fp);
+  BitFile *bf = BitFile_create(fp);
   int value = BitFile_nextBit(bf);
   while(value >= 0){
     if(value == 1){
       value = BitFile_nextByte(bf);
-      Stack_pushFront(stack, HuffNode_create(val));
+      Stack_pushFront(stack, HuffNode_create(value));
     }
     else if(value == 0){
       if(Stack_size(stack) == 1) break;
       Stack_popPopCombinePush(stack);
     }
-    val = BitFile_nextBit(bf);
+    value = BitFile_nextBit(bf);
   }
   HuffNode *tree = Stack_popFront(stack);
   Stack_destroy(stack);
-  BitFile_destroy(stack);
+  BitFile_destroy(bf);
   //Stack_destroy(stack);
   return tree;
 }
