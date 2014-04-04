@@ -69,8 +69,30 @@ char * implode(char ** strArr, int len, const char * glue)
   return together;
 }
 
+int strcmpvoid(const void * a , const void * b)
+{
+  const char *pa = *(const char**)a;
+  const char *pb = *(const char**)b;
+  return strcmp(pa,pb);
+}
 
 void sortStringArray(char ** arrString, int len)
 {
-  qsort(arrString, len, sizeof(char *), strcmp());
+  
+  //int strcmpvoid = mystrcmp();
+  qsort(arrString, len, sizeof(char *), strcmpvoid);
+}
+
+
+void sortStringCharacters(char * str)
+{
+  qsort(str, sizeof(str), sizeof(char), strcmpvoid);
+}
+
+void destroyStringArray(char ** strArr, int len)
+{
+  int ind;
+  for(ind = 0; ind < len; ind++){
+    free(strArr[ind]);
+  }
 }
