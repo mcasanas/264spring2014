@@ -6,55 +6,36 @@
 
 char * strcat_ex(char ** dest, int * n, const char * src)
 {
-  /*
-  char * buffer = NULL;
-  buffer = malloc(1 + 2*(strlen(*dest) + strlen(src)));
-  buffer = strcpy(buffer, *dest);
-  //free(dest);
-  dest = &buffer;
-  strcat(buffer, src);
-  *n = sizeof(buffer);
-  printf("%d %s\n",*n, buffer);
-  *dest = buffer;
-  free(buffer);
-  return *dest;*/
-  
   size_t src_len = strlen(src);
-  size_t dest_len = (*dest == NULL ? 0 : strlen(*dest));
+  size_t dest_len = *dest == NULL ? 0 : strlen(*dest);
   
   if(*dest == NULL || src_len + dest_len + 1 >= *n){
-    
-    *n = 1 + 2*(src_len + dest_len);
-    printf("%d\n", *n);
-    char * buffer = malloc(*n * sizeof(char));
-    printf("%s\n", buffer);
+    *n = 1 + 2 * (src_len + dest_len);
+    char *buffer = malloc(*n * sizeof(char));
     *buffer = '\0';
     if(*dest != NULL) strcpy(buffer, *dest);
-    printf("%s  %d\n%s  %d\n", buffer, strlen(buffer),  *dest, strlen(*dest));
+    //free(*dest);
     //free(buffer);
-    //dest = malloc(*n * sizeof(char));
     *dest = buffer;
-    free(buffer);
-    
   }
   strcat(*dest, src);
   return *dest;
 }
-/*
-char * * explode(const char * str, const char * delims, int * arrLen)
+
+char **explode(const char *str, const char *delims, int * arrlen)
 {
-  *arrLen = 1;
+  *arrlen = 1;
   const char *pos = str;
   while(*pos != '\0'){
-    if (strchr(delims, *pos)) *arrLen++;
+    if(strchr(delims, *pos)) (*arrlen)++;
   }
 
-  char **list = malloc(*arrLen * sizeof(char*));
+  char **list = malloc(*arrlen * sizeof(char *));
 
   int ind = 0;
   const char *start = str;
   pos = str;
-  while(*pos != '\0'){
+  while(pos != '\0'){
     if(strchr(delims, *pos)){
       int len = pos - start;
       list[ind] = malloc((len + 1) * sizeof(char));
@@ -66,8 +47,30 @@ char * * explode(const char * str, const char * delims, int * arrLen)
     pos++;
   }
 
-
   int len = pos - start;
-  list[ind] = malloc((len + 1) * sizeof(char));
+  list[ind] = malloc((len+1) * sizeof(char));
+  memcpy(list[ind], start, len * sizeof(char));
+  list[ind][len] = '\0';
   
-  }*/
+  return list;
+}
+
+char * implode(char ** strArr, int len, const char * glue)
+{
+  char *together;
+  char *buffer;
+  int ind;
+  int n = 0;
+  strcpy(buffer, strArr[0]);
+  for(ind = 1; ind < len; ind++){
+    together = strcat_ex(&buffer,&n,glue);
+    together = strcat_ex(&buffer,&n,strArr[ind]);
+  }
+  return together;
+}
+
+
+void sortStringArray(char ** arrString, int len)
+{
+  qsort(arrString, len, sizeof(char *), strcmp());
+}
