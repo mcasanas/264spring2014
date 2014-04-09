@@ -8,7 +8,7 @@ int arraySum(int * array, int len)
   int ind;
   for (ind = 0; ind < len; ind++){
     sum += array[ind];
-  }    
+  }
   return sum;
 }
 
@@ -25,13 +25,17 @@ int arrayCountNegative(int * array, int len)
 }
 
 int arrayIsIncreasing(int * array, int len)
-{ 
+{
   int ind;
   if(len == 1 || array == NULL){
     return 1;
   }
   for(ind = 1; ind < len; ind++){
+<<<<<<< HEAD
     if(array[ind] <= array[ind - 1]){
+=======
+    if(array[ind] <= array[ind -1]){
+>>>>>>> d2dc3455765402c62fd71afe2701d35a6ad931f5
       return 0;
     }
   }
@@ -41,8 +45,12 @@ int arrayIsIncreasing(int * array, int len)
 int arrayIndexRFind(int needle, const int * haystack, int len)
 {
   int ind;
+<<<<<<< HEAD
   //printf("%d\n",len);
   for(ind = len-1; ind >= 0; ind--){
+=======
+  for(ind = len - 1; ind >= 0; ind--){
+>>>>>>> d2dc3455765402c62fd71afe2701d35a6ad931f5
     if(haystack[ind] == needle){
       return ind;
     }
@@ -57,7 +65,11 @@ int arrayFindSmallest(int * array, int len)
   }
   int ind;
   int temp = array[0];
+<<<<<<< HEAD
   int pos;
+=======
+  int pos = 0;
+>>>>>>> d2dc3455765402c62fd71afe2701d35a6ad931f5
   if(len == 1){
     return 0;
   }

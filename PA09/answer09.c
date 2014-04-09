@@ -6,12 +6,12 @@
 HuffNode * HuffNode_create(int value)
 {
   HuffNode *node = malloc(sizeof(HuffNode));
-  node -> value - value;
+  node -> value = value;
   node -> left = NULL;
   node -> right = NULL;
   return node;
 }
-
+//
 void HuffNode_destroy(HuffNode * tree)
 {
   if(tree == NULL) return;
@@ -21,7 +21,7 @@ void HuffNode_destroy(HuffNode * tree)
   HuffNode_destroy(tree -> right);
   free(tree);
 }
-
+//
 
 Stack * Stack_create()
 {
@@ -29,10 +29,10 @@ Stack * Stack_create()
   stack -> head = NULL;
   return stack;
 }
-
+//
 void Stack_destroy(Stack * stack)
 {
-  if(stack ==NULL) return;
+  if(stack == NULL) return;
   StackNode *node = stack -> head;
   while(node != NULL){
     StackNode * tmp = node;
@@ -40,14 +40,16 @@ void Stack_destroy(Stack * stack)
     HuffNode_destroy(tmp -> tree);
     free(tmp);
   }
-		      
+  free(stack);
 }
-
+//
 int Stack_isEmpty(Stack * stack)
 {
   return stack->head == NULL;
+  //if(stack->head == NULL) return 0;
+  //return 1;
 }
-
+//
 HuffNode * Stack_popFront(Stack * stack)
 {
   if(Stack_isEmpty(stack)) return NULL;
@@ -57,7 +59,7 @@ HuffNode * Stack_popFront(Stack * stack)
   free(tmp);
   return tree;
 }
-
+//
 void Stack_pushFront(Stack * stack, HuffNode * tree)
 {
   if(stack == NULL) return;
@@ -66,11 +68,11 @@ void Stack_pushFront(Stack * stack, HuffNode * tree)
   node -> next = stack -> head;
   stack -> head = node;
 }
-
+//
 void Stack_popPopCombinePush(Stack * stack)
 {
-  HuffNode * first = Stack_popFront(stack);
-  HuffNode * second = Stack_popFront(stack);
+  HuffNode *first = Stack_popFront(stack);
+  HuffNode *second = Stack_popFront(stack);
   HuffNode *new_node = HuffNode_create(0);
   
   new_node -> right = first;
@@ -93,13 +95,13 @@ size_t Stack_size(Stack *stack)
 HuffNode * HuffTree_readTextHeader(FILE * fp)
 {
   Stack * stack = Stack_create();
-  int value;
-  while((value = fgetc(fp)) != EOF){
-    if(value == '1'){
-      value = fgetc(fp);
-      Stack_pushFront(stack, HuffNode_create(value));
+  int val;
+  while((val = fgetc(fp)) != EOF){
+    if(val == '1'){
+      val = fgetc(fp);
+      Stack_pushFront(stack, HuffNode_create(val));
     }
-    else if(value = '0'){
+    else if(val == '0'){
       if(Stack_size(stack) == 1) break;
       Stack_popPopCombinePush(stack);
     }
@@ -112,7 +114,7 @@ HuffNode * HuffTree_readTextHeader(FILE * fp)
 typedef struct{
   FILE * fp;
   unsigned char byte;
-  int pos;
+  int position;
 } BitFile;
 
 BitFile *BitFile_create(FILE *fp)
@@ -120,7 +122,7 @@ BitFile *BitFile_create(FILE *fp)
   BitFile *bitfile = malloc(sizeof(BitFile));
   bitfile -> fp = fp;
   bitfile -> byte = 0;
-  bitfile -> pos = 8;
+  bitfile -> position = 8;
   return bitfile;
 }
 
@@ -131,27 +133,27 @@ void BitFile_destroy(BitFile *bitfile)
 
 int BitFile_nextBit(BitFile *bitfile)
 {
-  if(bitfile -> pos == 8){
-    bitfile -> pos = 0;
+  if(bitfile -> position == 8){
+    bitfile -> position = 0;
     if (fread(&(bitfile->byte), sizeof(unsigned char), 1, bitfile->fp) != 1){
       return -1;
     }
   }
  
-  int val = (bitfile -> byte >> (7 - bitfile->pos)) & 1;
+  int val = (bitfile->byte >> (7 - bitfile->position)) & 1;
   //int val = bitfile -> byte & (1 << (7 - bitfile->pos));
-  bitfile->pos++;
+  bitfile->position++;
   return val;
 }
 
 int BitFile_nextByte(BitFile *bf)
 {
   int ret = 0;
-  int ind;
-  for(ind = 0; ind < 8; ind++){
+  int pos;
+  for(pos = 0; pos < 8; pos++){
     int bit = BitFile_nextBit(bf);
     if(bit < 0) return -1;
-    ret = ret | (bit << (7 - bf->pos));
+    ret = ret | (bit << (7 - pos));
   }
   return ret;
 }
@@ -160,17 +162,17 @@ HuffNode * HuffTree_readBinaryHeader(FILE * fp)
 {
   Stack *stack = Stack_create();
   BitFile *bf = BitFile_create(fp);
-  int value = BitFile_nextBit(bf);
-  while(value >= 0){
-    if(value == 1){
-      value = BitFile_nextByte(bf);
-      Stack_pushFront(stack, HuffNode_create(value));
+  int val = BitFile_nextBit(bf);
+  while(val >= 0){
+    if(val == 1){
+      val = BitFile_nextByte(bf);
+      Stack_pushFront(stack, HuffNode_create(val));
     }
-    else if(value == 0){
+    else if(val == 0){
       if(Stack_size(stack) == 1) break;
       Stack_popPopCombinePush(stack);
     }
-    value = BitFile_nextBit(bf);
+    val = BitFile_nextBit(bf);
   }
   HuffNode *tree = Stack_popFront(stack);
   Stack_destroy(stack);
