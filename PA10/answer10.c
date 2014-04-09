@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include "answer10.h"
+#include "tree.h"
 
 Stack * Stack_create()
 {
@@ -130,22 +131,39 @@ int sortHelper(int * array, int start, int mid, int end, int size)
 
   lMax = findMax(array, start, mid - 1);
   lMax_p = findIndex(array, lMax ,size);
-  rMin = findMax(array, mid + 1, end);
-  rMin_p = findIndex(array, lMax ,size);
+  rMin = findMin(array, mid + 1, end);
+  rMin_p = findIndex(array, rMin ,size);
   
   if(lMax > rMin) return 0;
 
-  if(sortHelper(array,start,lMax_p,mid-1,size)){
-    return sortHelper(array,mid+1,rMin_p,end,size);
-  }
-  
-  return 0;
+  //RIGHT WILL UPDATE TO MAX INSTEAD OF MIN
+  rMin = findMax(array, mid + 1, end);
+  rMin_p = findIndex(array, rMin ,size);
+
+  //RETURNS 1 IF LEFT AND RIGHT ARE TRUE
+  return (sortHelper(array,start,lMax_p,mid-1,size)&&(sortHelper(array, mid+1, rMin_p, end, size)));
 }
 
-int isstackSortable(int * array, int len)
+int isStackSortable(int * array, int len)
 {
   if(len < 3) return 1;
   int max = findMax(array, 0, len - 1);
   int max_p = findIndex(array, max, len);
   return sortHelper(array, 0, max_p,len - 1, len);
 } 
+/*
+  1.CREATE ARRAY
+  2.CHECK IF ARRAY IS SORTABLE
+  3.CREATE AND PRINT TREE
+  4.DON'T DUPLICATE TREES
+ */
+void genShapes(int n)
+{
+  /*
+  int ind;
+  int *array = malloc(sizeof(n));
+  for(ind = 0; ind < n;ind++){
+    *array = createArray(n);
+  }
+  */
+}
