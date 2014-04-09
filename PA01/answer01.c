@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "answer01.h"
 
 int arraySum(int * array, int len)
@@ -29,8 +30,8 @@ int arrayIsIncreasing(int * array, int len)
   if(len == 1 || array == NULL){
     return 1;
   }
-  for(ind = 0; ind < len; ind++){
-    if(array[ind] < array[ind -1]){
+  for(ind = 1; ind < len; ind++){
+    if(array[ind] <= array[ind - 1]){
       return 0;
     }
   }
@@ -40,7 +41,8 @@ int arrayIsIncreasing(int * array, int len)
 int arrayIndexRFind(int needle, const int * haystack, int len)
 {
   int ind;
-  for(ind = len; ind > 0; ind--){
+  //printf("%d\n",len);
+  for(ind = len-1; ind >= 0; ind--){
     if(haystack[ind] == needle){
       return ind;
     }
@@ -55,14 +57,16 @@ int arrayFindSmallest(int * array, int len)
   }
   int ind;
   int temp = array[0];
+  int pos;
   if(len == 1){
     return 0;
   }
   for(ind = 1; ind < len; ind++){
     if(array[ind] < temp){
       temp = array[ind];
+      pos = ind;
     }
   }
   
-  return temp;
+  return pos;
 }
