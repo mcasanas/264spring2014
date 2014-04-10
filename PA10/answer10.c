@@ -1,4 +1,5 @@
 #include<stdlib.h>
+#include<stdio.h>
 #include "answer10.h"
 #include "tree.h"
 
@@ -152,18 +153,90 @@ int isStackSortable(int * array, int len)
   return sortHelper(array, 0, max_p,len - 1, len);
 } 
 /*
-  1.CREATE ARRAY
+  1.CREATE ARRAYS
   2.CHECK IF ARRAY IS SORTABLE
   3.CREATE AND PRINT TREE
   4.DON'T DUPLICATE TREES
  */
+int arraySum(int *array, int len)
+{
+  int ind;
+  int tot = 0;
+  for(ind = 0; ind < len; ind++){
+    tot += array[ind];
+  }
+  return tot;
+}
+
+int actualSum(int n)
+{
+  int sum = 0;
+  int x = n +1;
+  while(x > 0){
+    sum += x--;
+  }
+  return sum;
+}
+
+int isDif(int * array, int n)
+{
+  int ind;
+  int v1;
+  int value;
+  for(v1 = 0; v1 < n; v1++){
+    value = array[v1];
+    for(ind = 0; ind<n; ind++){
+      if((value == array[ind]) && (v1 != ind)) return 0;
+    }
+  }
+  return 1;
+}
+
+int createArray(int * array, int place ,int n)
+{
+  int ind;
+  //printf("%d\n", place);
+  for(ind = 0; ind < n; ind++) {
+    array[place] = ind;
+    if(place < n) *array = createArray(array, place+1, n);
+    else if(place == n) {
+      //printf("aSum = %d\ntSum = %d\nisDif = %d\n", actualSum(n),arraySum(array,n),isDif(array,n));
+      if((isDif(array,n)) && (isStackSortable(array, n))){
+	/*
+	TreeNode *tree = malloc(sizeof(TreeNode));
+	tree = Tree_build(array,n);
+	Tree_printShape(tree);
+	Tree_destroy(tree);
+	*/
+        
+	for(ind = 0; ind < n; ind++){
+	printf("%d ", array[ind]);
+	}
+	printf("\n");
+	
+      }
+      
+      return *array;
+    }
+  }
+  return *array;
+}
+
 void genShapes(int n)
 {
-  /*
-  int ind;
-  int *array = malloc(sizeof(n));
-  for(ind = 0; ind < n;ind++){
-    *array = createArray(n);
+  //int ind;
+  printf("aSum = %d\n", actualSum(n));
+  int *array = malloc(sizeof(int) * n);
+  /*for(ind = 0; ind < n; ind++){
+    printf("%d ", array[ind]);
   }
+  printf("\n\n");
+  */
+ *array = createArray(array, 0,n);
+  /*printf("\n");
+  for(ind = 0; ind < n; ind++){
+    printf("%d ", array[ind]);
+  }
+  printf("\n");
   */
 }
