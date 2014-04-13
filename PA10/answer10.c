@@ -71,172 +71,92 @@ void stackSort(int * array, int len)
   Stack_destroy(stack);
 }
 
-/*
-INPUTS ARRAY, START OF ADDRESS, LAST ADDRESS
-RETURNS LARGEST VALUE
- */
-int findMax(int * array, int start, int end)
+int max_index(int * array, int start, int end)
 {
+  int maxNum = array[start];
+  int maxInd = start;
   int ind;
-  int val = array[start];
-  for(ind = start + 1; ind <= end; ind++){
-    if(array[ind]>val) val = array[ind];
+  for(ind = start; ind <= end; ind++){
+    if(array[ind] > maxNum){
+      maxNum = array[ind];
+      maxInd = ind;
+    }
   }
-  return val;
+  return maxInd; 
+}
+int min_index(int * array, int start, int end)
+{
+  int minNum = array[start];
+  int minInd = start;
+  int ind;
+  for(ind = start; ind <= end; ind++){
+    if(array[ind] < minNum){
+      minNum = array[ind];
+      minInd = ind;
+    }
+  }
+  return minInd; 
 }
 
-int findMin(int * array, int start, int end)
+
+int stackHelper(int * array, int start, int mid, int end)
 {
-  int ind;
-  int val = array[start];
-  for(ind = start + 1; ind <= end; ind++){
-    if(array[ind]<val) val = array[ind];
+  if((end - start) < 3) return 1;
+  if(start == mid){
+    return stackHelper(array, start+1, max_index(array, start+1, end),end);
   }
-  return val;
-}
-/*
- INPUTS ARRAY, VALUE TO FIND, LENGTH OF ARRAY
- RETURNS VALUE ADDRESS
- */
-int findIndex(int * array, int value, int len)
-{
-  int ind;
-  for(ind = 0; ind < len; ind++){
-    if(array[ind] == value) return ind;
-  }
-  return -1;
-}
-/*
- INPUTS ARRAY, ADDRESSES, FULL SIZE
- */
-int sortHelper(int * array, int start, int mid, int end, int size)
-{ 
-  int len = end - start + 1;
-  if(len < 3) return 1;
-  
-  int lMax;
-  int rMin;
-  int lMax_p;
-  int rMin_p;
-  
-  if(mid == end){
-    lMax = findMax(array, start, end - 1);
-    lMax_p = findIndex(array, lMax ,size);
-    return sortHelper(array, start, lMax_p, end - 1, size);
-  }
-  else if(mid == start){
-    lMax = findMax(array, start + 1, end);
-    lMax_p = findIndex(array, lMax ,size);
-    return sortHelper(array, start + 1, lMax_p, end, size);
+  else if(end == mid){
+    return stackHelper(array,start, max_index(array,start, end-1),end-1);
   }
 
-  lMax = findMax(array, start, mid - 1);
-  lMax_p = findIndex(array, lMax ,size);
-  rMin = findMin(array, mid + 1, end);
-  rMin_p = findIndex(array, rMin ,size);
-  
-  if(lMax > rMin) return 0;
-
-  //RIGHT WILL UPDATE TO MAX INSTEAD OF MIN
-  rMin = findMax(array, mid + 1, end);
-  rMin_p = findIndex(array, rMin ,size);
-
-  //RETURNS 1 IF LEFT AND RIGHT ARE TRUE
-  return (sortHelper(array,start,lMax_p,mid-1,size)&&(sortHelper(array, mid+1, rMin_p, end, size)));
+  int Lmax_ind = max_index(array,start, mid-1);
+  int Rmin_ind = min_index(array,mid+1,end);
+  if(array[Lmax_ind] < array[Rmin_ind]) return 1;
+  else return 0;
+  int Rmax_ind = max_index(array,mid+1,end);
+  return (stackHelper(array,start,Lmax_ind,mid-1) && stackHelper(array,mid+1,Rmax_ind,end));
 }
 
 int isStackSortable(int * array, int len)
 {
-  if(len < 3) return 1;
-  int max = findMax(array, 0, len - 1);
-  int max_p = findIndex(array, max, len);
-  return sortHelper(array, 0, max_p,len - 1, len);
-} 
-/*
-  1.CREATE ARRAYS
-  2.CHECK IF ARRAY IS SORTABLE
-  3.CREATE AND PRINT TREE
-  4.DON'T DUPLICATE TREES
- */
-int arraySum(int *array, int len)
-{
-  int ind;
-  int tot = 0;
-  for(ind = 0; ind < len; ind++){
-    tot += array[ind];
-  }
-  return tot;
+  if (len < 3) return 1;
+  int max_ind = max_index(array, 0, len-1);
+  return stackHelper(array, 0, max_ind, len - 1);
 }
 
-int actualSum(int n)
+void mySwap(int *a, int *b)
 {
-  int sum = 0;
-  int x = n +1;
-  while(x > 0){
-    sum += x--;
-  }
-  return sum;
+  int tmp = *a;
+  *a = *b;
+  *b = tmp;
 }
 
-int isDif(int * array, int n)
+void shapeHelper(int*array, int pos, int n)
 {
-  int ind;
-  int v1;
-  int value;
-  for(v1 = 0; v1 < n; v1++){
-    value = array[v1];
-    for(ind = 0; ind<n; ind++){
-      if((value == array[ind]) && (v1 != ind)) return 0;
+  if(pos == n){
+    if(isStackSortable(array,n)){
+      TreeNode *tree = Tree_build(array, n);
+      Tree_printShape(tree);
+      Tree_destroy(tree);
     }
   }
-  return 1;
-}
-
-int createArray(int * array, int place ,int n)
-{
-  int ind;
-  //printf("%d\n", place);
-  for(ind = 0; ind < n; ind++) {
-    array[place] = ind;
-    if(place < n) *array = createArray(array, place+1, n);
-    else if(place == n) {
-      //printf("aSum = %d\ntSum = %d\nisDif = %d\n", actualSum(n),arraySum(array,n),isDif(array,n));
-      if((isDif(array,n)) && (isStackSortable(array, n))){
-	/*
-	TreeNode *tree = malloc(sizeof(TreeNode));
-	tree = Tree_build(array,n);
-	Tree_printShape(tree);
-	Tree_destroy(tree);
-	*/
-        
-	for(ind = 0; ind < n; ind++){
-	printf("%d ", array[ind]);
-	}
-	printf("\n");
-	
-      }
-      
-      return *array;
+  else{
+    int ind;
+    for(ind = pos; ind < n;ind++){
+      mySwap(&array[pos], &array[ind]);
+      shapeHelper(array,pos+1,n);
+      mySwap(&array[pos], &array[ind]);
     }
   }
-  return *array;
 }
 
 void genShapes(int n)
 {
-  //int ind;
-  printf("aSum = %d\n", actualSum(n));
-  int *array = malloc(sizeof(int) * n);
-  /*for(ind = 0; ind < n; ind++){
-    printf("%d ", array[ind]);
+  int *array = malloc(sizeof(int)*n);
+  int ind;
+  for(ind=0;ind<n;ind++){
+    array[ind] = ind;
   }
-  printf("\n\n");
-  */
- *array = createArray(array, 0,n);
-  /*printf("\n");
-  for(ind = 0; ind < n; ind++){
-    printf("%d ", array[ind]);
-  }
-  printf("\n");
-  */
+  shapeHelper(array,0,n);
+  free(array);
 }
