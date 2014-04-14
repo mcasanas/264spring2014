@@ -38,22 +38,17 @@ void MoveTree_print(MoveTree * node)
 
 int compareArray(const void *a, const void *b)
 {
-  return(*(int*)a - *(int*)b);
+  return(*(char*)a - *(char*)b);
 }
-int sumString(const char * buffer)
-{
-  int ind;
-  int tot=0;
-  for(ind = 0;ind < 16;ind++){
-    tot += atoi(buffer[ind]);
-  }
-}
+
 int isValidState(const char * state)
 {
   if(strlen(state) != 16) return 0;
-  const char * buffer = strdup(state);
-  qsort(&buffer, 16,sizeof(int),compareArray);
-  if(sumString(buffer) == 927) return 1;
+  char buffer[17];
+  strcpy(buffer, state);
+  qsort(buffer, 16,sizeof(char),compareArray);
+  const char *valid = "-123456789ABCDEF";
+  if(strcmp(buffer, valid) == 0) return 1;
   return 0;
 }
 
