@@ -71,6 +71,7 @@ void stackSort(int * array, int len)
   Stack_destroy(stack);
 }
 
+
 int max_index(int * array, int start, int end)
 {
   int maxNum = array[start];
@@ -101,7 +102,7 @@ int min_index(int * array, int start, int end)
 
 int stackHelper(int * array, int start, int mid, int end)
 {
-  if((end - start) < 3) return 1;
+  if((end - start+1) < 3) return 1;
   if(start == mid){
     return stackHelper(array, start+1, max_index(array, start+1, end),end);
   }
@@ -111,17 +112,21 @@ int stackHelper(int * array, int start, int mid, int end)
 
   int Lmax_ind = max_index(array,start, mid-1);
   int Rmin_ind = min_index(array,mid+1,end);
-  if(array[Lmax_ind] < array[Rmin_ind]) return 1;
-  else return 0;
+  if(array[Lmax_ind] > array[Rmin_ind]) return 0;
+
   int Rmax_ind = max_index(array,mid+1,end);
-  return (stackHelper(array,start,Lmax_ind,mid-1) && stackHelper(array,mid+1,Rmax_ind,end));
+  
+  if (stackHelper(array, start, Lmax_ind, mid-1)&&stackHelper(array, mid+1,Rmax_ind,end)) return 1;
+
+  return 0;
 }
 
 int isStackSortable(int * array, int len)
 {
   if (len < 3) return 1;
   int max_ind = max_index(array, 0, len-1);
-  return stackHelper(array, 0, max_ind, len - 1);
+  return stackHelper(array, 0, max_ind, len-1);
+  //return sortHelper(array,0,max_ind,len-1);
 }
 
 void mySwap(int *a, int *b)
@@ -133,8 +138,14 @@ void mySwap(int *a, int *b)
 
 void shapeHelper(int*array, int pos, int n)
 {
+  //int x;
   if(pos == n){
     if(isStackSortable(array,n)){
+      //printf("\n");
+      //for(x=0;x<n;x++){
+      //printf("%d",array[x]);
+      //}
+      //printf("\n");
       TreeNode *tree = Tree_build(array, n);
       Tree_printShape(tree);
       Tree_destroy(tree);
@@ -144,6 +155,7 @@ void shapeHelper(int*array, int pos, int n)
     int ind;
     for(ind = pos; ind < n;ind++){
       mySwap(&array[pos], &array[ind]);
+      
       shapeHelper(array,pos+1,n);
       mySwap(&array[pos], &array[ind]);
     }
