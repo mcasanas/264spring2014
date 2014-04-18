@@ -14,7 +14,7 @@
  */
 void printPuzzle(const char * state)
 {
-    int row, col;
+  int row, col;
     for(row = 0; row < SIDELENGTH; ++row) {
 	for(col = 0; col < SIDELENGTH; ++col) {
 	    printf(" %c", state[row*SIDELENGTH + col]);
@@ -43,13 +43,13 @@ int compareArray(const void *a, const void *b)
 
 int isValidState(const char * state)
 {
-  if(strlen(state) != 16) return 0;
+  if(strlen(state) != 16) return FALSE;
   char buffer[17];
   strcpy(buffer, state);
   qsort(buffer, 16,sizeof(char),compareArray);
   const char *valid = "-123456789ABCDEF";
-  if(strcmp(buffer, valid) == 0) return 1;
-  return 0;
+  if(strcmp(buffer, valid) == 0) return TRUE;
+  return FALSE;
 }
 
 int isValidMoveList(const char * movelist)
@@ -58,9 +58,9 @@ int isValidMoveList(const char * movelist)
   const char *valid = "RLUD";
   int len = strlen(movelist);
   for(ind = 0; ind<len; ind++){
-    if(strchr(valid, movelist[ind]) == NULL) return 0;
+    if(strchr(valid, movelist[ind]) == NULL) return FALSE;
   }
-  return 1;
+  return TRUE;
 }
 void swap(char *a, char*b)
 {
@@ -83,10 +83,10 @@ int move(char * state, char m)
   case 'L': new_col = col - 1; break;
   case 'R': new_col = col + 1; break;
   }
-  if(new_row < 0 || new_row >= SIDELENGTH || new_col < 0 || new_col >= SIDELENGTH) return 0;
+  if(new_row < 0 || new_row >= SIDELENGTH || new_col < 0 || new_col >= SIDELENGTH) return FALSE;
   int target_pos = new_row * SIDELENGTH + new_col;
   swap(state + pos, state+target_pos);
-  return 1;
+  return TRUE;
 }
 
 void processMoveList(char * state, const char * movelist)
@@ -94,7 +94,7 @@ void processMoveList(char * state, const char * movelist)
   int ind;
   int len = strlen(movelist);
   for(ind = 0; ind < len; ind++){
-    if(move(state,movelist[ind]) == 0){
+    if(move(state,movelist[ind]) == FALSE){
       printf("I\n");
       return;
     }
@@ -158,7 +158,7 @@ void generateAllHelper(MoveTree * root, int n_moves, const char * state, char * 
     char m = validMoves[i];
     char *dup_state = strdup(state);
     int result = move(dup_state,m);
-    if(result==1){
+    if(result==TRUE){
       movelist[ind] = m;
       movelist[ind + 1] = '\0';
       MoveTree_insert(root,dup_state,movelist);
@@ -189,7 +189,7 @@ char *solve(char * state)
   MoveTree_destroy(tree);
   return moves;
 }
-
+/*
 int main(int argc, char ** argv)
 {
   if(argc != 3) return 0;
@@ -200,3 +200,4 @@ int main(int argc, char ** argv)
   processMoveList(state, movelist);
   return 1;
 }
+*/
