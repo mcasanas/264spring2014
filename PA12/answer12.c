@@ -7,7 +7,7 @@
 
 int my_isspace(int ch)
 {
-  return ch == ' ' || ch == '\n' || ch == '\t' || ch == '\r';
+  return ch == ' ' || ch == '\n' || ch == '\t' || ch == '\r' || ch == '\f' || ch == '\v';
 }
 
 uint128 alphaTou128(const char * str)
@@ -17,6 +17,7 @@ uint128 alphaTou128(const char * str)
   while (*str >= '0' && *str <= '9'){
     value *= 10;
     value += (*str - '0');
+    str++;
   }
   return value;
 }
@@ -112,10 +113,10 @@ int genRandomArray(int number)
   return array;
 }
 */
-
+/*
 int main(int argc, char * * argv)
 {
-  /*
+  / 
   for(!feof(stdin)){
     int val;
     printf("> ");
@@ -123,7 +124,7 @@ int main(int argc, char * * argv)
     int *array = getRandomArray(val);
     qsort(array,val,sizeof(int), intcmp);
   }
-  */
+  
 
   //conversions
     const char * str = "340282366920938463463374607431768211455";
@@ -135,7 +136,7 @@ int main(int argc, char * * argv)
     free(w_str);
     return EXIT_SUCCESS;
   
-
+    
     //primes
     if(argc != 3) return EXIT_FAILURE;
     char *num = argv[2];
@@ -146,3 +147,5 @@ int main(int argc, char * * argv)
     
     
 }
+
+*/
